@@ -13,6 +13,7 @@ class board
         void print();
         bool isBlank(int, int);
         ValueType getCell(int, int);
+        void setCell(int i, int j, char val);
 
     private:
         // The following matrices go from 1 to BoardSize in each

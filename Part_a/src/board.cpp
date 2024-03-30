@@ -10,9 +10,11 @@ void board::clear()
 // Mark all possible values as legal for each board entry
 {
     for (int i = 1; i <= BoardSize; i++)
-    for (int j = 1; j <= BoardSize; j++)
     {
-        value[i][j] = Blank;
+        for (int j = 1; j <= BoardSize; j++)
+        {
+            value[i][j] = Blank;
+        }
     }
 }
 
@@ -24,13 +26,15 @@ void board::initialize(ifstream &fin)
     clear();
 
     for (int i = 1; i <= BoardSize; i++)
-    for (int j = 1; j <= BoardSize; j++)
     {
-        fin >> ch;
-        // If the read char is not Blank
-        if (ch != '.')
+        for (int j = 1; j <= BoardSize; j++)
         {
-            setCell(i,j,ch-'0'); // Convert char to int
+            fin >> ch;
+            // If the read char is not Blank
+            if (ch != '.')
+            {
+                setCell(i, j, ch-'0'); // Convert char to int
+            }
         }
     }
 }
@@ -86,7 +90,7 @@ void board::print()
             }
             else
             {
-                cout << " ";
+                cout << "   ";
             }
         }
         cout << "|";
@@ -99,4 +103,9 @@ void board::print()
     }
     cout << "-";
     cout << endl;
+}
+
+void board::setCell(int i, int j, char val)
+{
+    value[i][j] = int(val);
 }
