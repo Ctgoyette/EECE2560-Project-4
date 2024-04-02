@@ -2,6 +2,7 @@
 #define BOARD_H
 
 #include "constants.h"
+#include <iostream>
 
 class board
 // Stores the entire Sudoku board
@@ -14,12 +15,20 @@ class board
         bool isBlank(int, int);
         ValueType getCell(int, int);
         void setCell(int i, int j, char val);
+        void initializeConflicts();
+        void getConflicts();
+        int checkRow(int i, int j, int k);
+        int checkColumn(int i, int j, int k);
+        int checkSquare(int i, int j, int k);
+        void printConflicts();
+        
 
     private:
         // The following matrices go from 1 to BoardSize in each
         // dimension, i.e., they are each (BoardSize+1) * (BoardSize+1)
 
-        matrix<ValueType> value; //Board
+        matrix<ValueType> value; // Board
+        matrix<vector<ValueType> > conflicts; // Conflict Vectors
 };
 
 #endif
