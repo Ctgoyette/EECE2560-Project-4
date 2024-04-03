@@ -242,7 +242,9 @@ void board::printConflicts()
 
 bool board::completeColumn(int i)
 {
-    vector<int> numVector = {1,2,3,4,5,6,7,8,9};
+    vector<int> numVector (BoardSize);
+    for (int num = 1; num <= BoardSize; num++) {numVector[num-1] = num;}
+    
     for (int j = 0; j < BoardSize; j++)
     {
         auto index = find(numVector.begin(), numVector.end(), value[i][j]);
@@ -257,7 +259,9 @@ bool board::completeColumn(int i)
 
 bool board::completeRow(int j)
 {
-    vector<int> numVector = {1,2,3,4,5,6,7,8,9};
+    vector<int> numVector (BoardSize);
+    for (int num = 1; num <= BoardSize; num++) {numVector[num-1] = num;}
+
     for (int i = 0; i < BoardSize; i++)
     {
         auto index = find(numVector.begin(), numVector.end(), value[i][j]);
@@ -275,13 +279,16 @@ bool board::completeSquares()
     int count = 0;
     int xstart = 0;
     int ystart = 0;
-    vector<int> numVector;
+    vector<int> numVector (BoardSize);
+    vector<int> placeHolder (BoardSize);
+    for (int num = 1; num <= BoardSize; num++) {placeHolder[num-1] = num;}
 
     while (count < BoardSize)
     {
         xstart = count%SquareSize*SquareSize;
         ystart = count/SquareSize*SquareSize;
-        numVector = {1,2,3,4,5,6,7,8,9};
+
+        numVector = placeHolder;
         //cout << " xstart: " << xstart << " ystart: " << ystart;
         for (int i = xstart; i < xstart+SquareSize; i++)
         {
