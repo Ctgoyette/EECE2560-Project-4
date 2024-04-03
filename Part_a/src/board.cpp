@@ -37,7 +37,7 @@ void board::initialize(ifstream &fin)
             }
             else 
             {
-                setCell(i, j, -1);
+                setCell(i, j, Blank);
             }
         }
     }
@@ -238,4 +238,89 @@ void board::printConflicts()
             cout << endl;
         }
     }
+}
+
+bool board::completeColumn(int i)
+{
+    vector<int> numVector = {1,2,3,4,5,6,7,8,9};
+    for (int j = 0; j < BoardSize; j++)
+    {
+        auto index = find(numVector.begin(), numVector.end(), value[i][j]);
+        if (index != numVector.end())
+        {
+            numVector.erase(index);
+        }
+    }
+    if (numVector.empty()) {return true;}
+    else {return false;}
+}
+
+bool board::completeRow(int j)
+{
+    vector<int> numVector = {1,2,3,4,5,6,7,8,9};
+    for (int i = 0; i < BoardSize; i++)
+    {
+        auto index = find(numVector.begin(), numVector.end(), value[i][j]);
+        if (index != numVector.end())
+        {
+            numVector.erase(index);
+        }
+    }
+    if (numVector.empty()) {return true;}
+    else {return false;}
+}
+
+bool board::completeSquares()
+{
+    int count = 0;
+    int xstart = 0;
+    int ystart = 0;
+    vector<int> numVector;
+
+    while (count < BoardSize)
+    {
+        xstart = count%SquareSize*SquareSize;
+        ystart = count/SquareSize*SquareSize;
+        numVector = {1,2,3,4,5,6,7,8,9};
+        //cout << " xstart: " << xstart << " ystart: " << ystart;
+        for (int i = xstart; i < xstart+SquareSize; i++)
+        {
+            for (int j = ystart; j < ystart+SquareSize; j++)
+            {
+                //cout << " i: " << i << " j: " << j; 
+                auto index = find(numVector.begin(), numVector.end(), value[i][j]);
+                if (index != numVector.end())
+                {
+                    numVector.erase(index);
+                }
+            }
+        }
+        if (!numVector.empty()) {return false;}
+        count++;
+    }
+    return true;
+}
+
+bool board::checkWin()
+{
+    // Check that board is full and columns are complete
+    for (int i = 0; i < BoardSize; i++)
+    {
+        if(!completeColumn(i)) {cout << "ColumnFail"; return false;}
+        for (int j = 0; j <  BoardSize; j++)
+        {
+            if (value[i][j] == Blank) {cout << "BlankFail"; return false;}
+        }
+    }
+
+    // Checks that rows are complete
+    for (int j = 0; j < BoardSize; j++)
+    {
+        if(!completeRow(j)) {cout << "RowFail"; return false;}
+    }
+
+    // Checks that the squares are complete
+    if (!completeSquares()) {cout << "SquareFail"; return false;}
+
+    return true;   
 }

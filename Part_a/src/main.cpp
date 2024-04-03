@@ -24,6 +24,13 @@ int main()
             b1.initialize(fin);
             b1.print();
             b1.printConflicts();
+            if (b1.checkWin())
+            {
+                cout << endl << "You won!" << endl;
+            }
+            else{
+                cout << endl << "Keep Going..." << endl;
+            }
         }
     }
     catch (indexRangeError &ex)

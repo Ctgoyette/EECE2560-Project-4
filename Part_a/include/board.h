@@ -3,6 +3,7 @@
 
 #include "constants.h"
 #include <iostream>
+#include <algorithm>
 
 class board
 // Stores the entire Sudoku board
@@ -21,7 +22,10 @@ class board
         int checkColumn(int i, int j, int k);
         int checkSquare(int i, int j, int k);
         void printConflicts();
-        
+        bool checkWin();
+        bool completeColumn(int i);
+        bool completeRow(int j);
+        bool completeSquares();
 
     private:
         // The following matrices go from 1 to BoardSize in each
