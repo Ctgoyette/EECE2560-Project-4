@@ -115,13 +115,24 @@ void board::print()
     cout << endl;
 }
 
-void board::setCell(int i, int j, char val)
+void board::setCell(int i, int j, int set_val)
 {
-    value[i][j] = int(val);
+    value[i][j] = set_val;
+
+    row_conflicts[i][set_val-1] = 1;
+    column_conflicts[j][set_val-1] = 1;
+    square_conflicts[determineSquare(i, j)][set_val-1] = 1;
+
 }
 
 void board::eraseCell(int i, int j)
 {
+    int cur_val = value[i][j];
+
+    row_conflicts[i][cur_val-1] = 0;
+    column_conflicts[j][cur_val-1] = 0;
+    square_conflicts[determineSquare(i, j)][cur_val-1] = 0;
+
     value[i][j] = Blank;
 }
 
@@ -308,4 +319,14 @@ bool board::checkWin()
     if (!completeSquares()) {cout << "SquareFail" << endl; return false;}
 
     return true;   
+}
+
+int board::determineSquare(int i, int j)
+{
+    int square_row = i/SquareSize;
+    int square_column = j/SquareSize;
+
+    int square_num = (square_row*SquareSize) + square_column;
+
+    return square_num;
 }

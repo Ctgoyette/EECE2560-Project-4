@@ -15,7 +15,7 @@ class board
         void print();
         bool isBlank(int, int);
         ValueType getCell(int, int);
-        void setCell(int i, int j, char val);
+        void setCell(int i, int j, int val);
         void eraseCell(int i, int j);
         void initializeConflicts();
         bool checkRow(int i, int k);
@@ -35,6 +35,8 @@ class board
         matrix<bool> row_conflicts; // Conflict Vectors
         matrix<bool> column_conflicts;
         matrix<bool> square_conflicts;
+
+        int determineSquare(int i, int j);
 };
 
 #endif
