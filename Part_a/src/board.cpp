@@ -302,21 +302,21 @@ bool board::checkWin()
     // Check that board is full and columns are complete
     for (int i = 0; i < BoardSize; i++)
     {
-        if(!completeColumn(i)) {cout << "ColumnFail" << endl; return false;}
+        if(!completeColumn(i)) {return false;}
         for (int j = 0; j <  BoardSize; j++)
         {
-            if (value[i][j] == Blank) {cout << "BlankFail" << endl; return false;}
+            if (value[i][j] == Blank) {return false;}
         }
     }
 
     // Checks that rows are complete
     for (int j = 0; j < BoardSize; j++)
     {
-        if(!completeRow(j)) {cout << "RowFail" << endl; return false;}
+        if(!completeRow(j)) {return false;}
     }
 
     // Checks that the squares are complete
-    if (!completeSquares()) {cout << "SquareFail" << endl; return false;}
+    if (!completeSquares()) {return false;}
 
     return true;   
 }

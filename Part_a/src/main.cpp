@@ -7,7 +7,7 @@ int main()
     ifstream fin;
 
     // Read the sample grid from the file.
-    string fileName = "sudoku_test2.txt";
+    string fileName = "sudoku.txt";
 
     fin.open(fileName.c_str());
     if (!fin)
@@ -26,10 +26,10 @@ int main()
             b1.printConflicts();
             if (b1.checkWin())
             {
-                cout << endl << "Board is complete. You won!" << endl;
+                cout << "## Board is complete. You won!\n" << endl;
             }
             else{
-                cout << endl << "Board is not complete. Keep Going..." << endl;
+                cout << "## Board is not complete. Keep Going...\n" << endl;
             }
         }
     }
