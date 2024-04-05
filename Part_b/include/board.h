@@ -26,6 +26,8 @@ class board
         bool completeColumn(int i);
         bool completeRow(int j);
         bool completeSquares();
+        bool solveBoard(int row, int col);
+        unsigned long getIterations();
 
     private:
         // The following matrices go from 1 to BoardSize in each
@@ -37,6 +39,8 @@ class board
         matrix<bool> square_conflicts;
 
         int determineSquare(int i, int j);
+        bool checkValid(int i, int j, int k);
+        unsigned long iterations;
 };
 
 #endif

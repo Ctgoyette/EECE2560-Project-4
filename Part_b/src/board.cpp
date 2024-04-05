@@ -53,7 +53,7 @@ ValueType board::getCell(int i, int j)
 // Returns the value stored in a cell. Throws an exception
 // if bad values are passed.
 {
-    if (i >= 0 && i < BoardSize && j >= 0 && j <= BoardSize)
+    if (i >= 0 && i < BoardSize && j >= 0 && j < BoardSize)
     {
         return value[i][j];
     }
@@ -299,26 +299,14 @@ bool board::completeSquares()
 
 bool board::checkWin()
 {
-    // Check that board is full and columns are complete
     for (int i = 0; i < BoardSize; i++)
     {
-        if(!completeColumn(i)) {return false;}
-        for (int j = 0; j <  BoardSize; j++)
+        if (row_conflicts[i] != FullConflictVector || column_conflicts[i] != FullConflictVector || square_conflicts[i] != FullConflictVector)
         {
-            if (value[i][j] == Blank) {return false;}
+            return false;
         }
     }
-
-    // Checks that rows are complete
-    for (int j = 0; j < BoardSize; j++)
-    {
-        if(!completeRow(j)) {return false;}
-    }
-
-    // Checks that the squares are complete
-    if (!completeSquares()) {return false;}
-
-    return true;   
+    return true;
 }
 
 int board::determineSquare(int i, int j)
@@ -327,6 +315,45 @@ int board::determineSquare(int i, int j)
     int square_column = j/SquareSize;
 
     int square_num = (square_row*SquareSize) + square_column;
-
     return square_num;
+}
+
+bool board::checkValid(int i, int j, int k)
+{
+    if (row_conflicts[i][k-1] == 1 || column_conflicts[j][k-1] == 1 || square_conflicts[determineSquare(i, j)][k-1] == 1)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool board::solveBoard(int row, int col)
+{
+    if (row == 0 && col == 0){iterations = 1;}
+    else {iterations += 1;}
+
+    if (row == BoardSize) {return true;}
+    else if (col == BoardSize) {return solveBoard(row+1, 0);}
+    else if (value[row][col] != Blank) {return solveBoard(row, col+1);}
+    else 
+    {
+        for (int k = 1; k <= MaxValue; k++)
+        {
+            if (checkValid(row, col, k))
+            {
+                setCell(row, col, k);
+                if (solveBoard(row, col+1))
+                {
+                    return true;
+                }
+                eraseCell(row, col);
+            }
+        }
+        return false;
+    }
+}
+
+unsigned long board::getIterations()
+{
+    return iterations;
 }
