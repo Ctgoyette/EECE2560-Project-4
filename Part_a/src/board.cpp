@@ -42,7 +42,7 @@ void board::initialize(ifstream &fin)
         }
     }
     initializeConflicts();
-    getConflicts();
+    updateConflicts();
 }
 
 ValueType board::getCell(int i, int j)
@@ -122,7 +122,7 @@ void board::initializeConflicts()
     {
         for (int j = 0; j < BoardSize; j++)
         {
-            for (int k = 1; k <= BoardSize; k++)
+            for (int k = 1; k <= MaxValue; k++)
             {
                 //cout << "i: " << i << " j: " << j << " k: " << k << endl;
                 conflicts[i][j].push_back(int(0));
@@ -131,28 +131,24 @@ void board::initializeConflicts()
     }
 }
 
-void board::getConflicts()
+void board::updateConflicts()
 {
-    int num_conflicts;
     for (int i = 0; i < BoardSize; i++)
     {
         for (int j = 0; j < BoardSize; j++)
         {
             for (int k = 1; k <= BoardSize; k++)
             {
-                num_conflicts = 0;
-                num_conflicts += checkRow(i,j,k);
-                //cout << "row conflicts: " << num_conflicts << endl;
-                num_conflicts += checkColumn(i,j,k);
-                //cout << "With column conflicts: " << num_conflicts << " ";
-                num_conflicts += checkSquare(i,j,k);
-                conflicts[i][j][k-1] = num_conflicts;
+                conflicts[i][j][k-1] = 0;
+                if (checkRow(i,j,k) || checkColumn(i,j,k) || checkSquare(i,j,k)) {
+                    conflicts[i][j][k-1] = 1;
+                }
             }
         }
     }
 }
 
-int board::checkRow(int i, int j, int k)
+bool board::checkRow(int i, int j, int k)
 {
     bool check = false;
     if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
@@ -179,7 +175,7 @@ int board::checkRow(int i, int j, int k)
     return 0;
 }
 
-int board::checkColumn(int i, int j, int k)
+bool board::checkColumn(int i, int j, int k)
 {   
     // bool check = false;
     // if (i == 7 && j == 6) {check = true;}
@@ -209,7 +205,7 @@ int board::checkColumn(int i, int j, int k)
     return 0;
 }
 
-int board::checkSquare(int i, int j, int k)
+bool board::checkSquare(int i, int j, int k)
 {
     int square_row = i/SquareSize;
     int square_column = j/SquareSize;
