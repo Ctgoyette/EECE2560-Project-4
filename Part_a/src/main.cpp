@@ -26,10 +26,10 @@ int main()
             b1.printConflicts();
             if (b1.checkWin())
             {
-                cout << endl << "You won!" << endl;
+                cout << endl << "Board is complete. You won!" << endl;
             }
             else{
-                cout << endl << "Keep Going..." << endl;
+                cout << endl << "Board is not complete. Keep Going..." << endl;
             }
         }
     }

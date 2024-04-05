@@ -16,11 +16,11 @@ class board
         bool isBlank(int, int);
         ValueType getCell(int, int);
         void setCell(int i, int j, char val);
+        void eraseCell(int i, int j);
         void initializeConflicts();
-        void getConflicts();
-        int checkRow(int i, int j, int k);
-        int checkColumn(int i, int j, int k);
-        int checkSquare(int i, int j, int k);
+        bool checkRow(int i, int k);
+        bool checkColumn(int column, int k);
+        bool checkSquare(int square_num, int k);
         void printConflicts();
         bool checkWin();
         bool completeColumn(int i);
@@ -32,7 +32,9 @@ class board
         // dimension, i.e., they are each (BoardSize+1) * (BoardSize+1)
 
         matrix<ValueType> value; // Board
-        matrix<vector<ValueType> > conflicts; // Conflict Vectors
+        matrix<bool> row_conflicts; // Conflict Vectors
+        matrix<bool> column_conflicts;
+        matrix<bool> square_conflicts;
 };
 
 #endif

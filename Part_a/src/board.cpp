@@ -1,6 +1,11 @@
 #include "../include/board.h"
 
-board::board(int sqSize) : value(BoardSize+1,BoardSize+1), conflicts(BoardSize+1,BoardSize+1)
+board::board(int sqSize) : 
+value(BoardSize+1,BoardSize+1), 
+row_conflicts(BoardSize,MaxValue),
+column_conflicts(BoardSize,MaxValue),
+square_conflicts(BoardSize,MaxValue)
+
 // Board constructor
 {
     clear();
@@ -42,7 +47,6 @@ void board::initialize(ifstream &fin)
         }
     }
     initializeConflicts();
-    updateConflicts();
 }
 
 ValueType board::getCell(int i, int j)
@@ -116,99 +120,55 @@ void board::setCell(int i, int j, char val)
     value[i][j] = int(val);
 }
 
+void board::eraseCell(int i, int j)
+{
+    value[i][j] = Blank;
+}
+
 void board::initializeConflicts()
 {
     for (int i = 0; i < BoardSize; i++)
     {
-        for (int j = 0; j < BoardSize; j++)
+        for (int j = 0; j < MaxValue; j++)
         {
-            for (int k = 1; k <= MaxValue; k++)
-            {
-                //cout << "i: " << i << " j: " << j << " k: " << k << endl;
-                conflicts[i][j].push_back(int(0));
-            }
+            row_conflicts[i][j] = checkRow(i,j+1);
+            column_conflicts[i][j] = checkColumn(i, j+1);
+            square_conflicts[i][j] = checkSquare(i, j+1);
         }
     }
 }
 
-void board::updateConflicts()
+
+bool board::checkRow(int row, int k)
+{
+    for (int j = 0; j < BoardSize; j++)
+    {
+        if (value[row][j] == k)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+bool board::checkColumn(int column, int k)
 {
     for (int i = 0; i < BoardSize; i++)
     {
-        for (int j = 0; j < BoardSize; j++)
-        {
-            for (int k = 1; k <= BoardSize; k++)
-            {
-                conflicts[i][j][k-1] = 0;
-                if (checkRow(i,j,k) || checkColumn(i,j,k) || checkSquare(i,j,k)) {
-                    conflicts[i][j][k-1] = 1;
-                }
-            }
-        }
-    }
-}
-
-bool board::checkRow(int i, int j, int k)
-{
-    bool check = false;
-    if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
-    int square_column = j/SquareSize;
-    if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
-    for (int j = 0; j < SquareSize*square_column; j++)
-    {
-        if (value[i][j] == k)
+        if (value[i][column] == k)
         {
             return 1;
         }
     }
-    if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
-    if (square_column < SquareSize - 1)
-    {
-        for (int j = square_column+SquareSize; j < BoardSize; j++)
-        {
-            if (value[i][j] == k)
-            {
-                return 1;
-            }
-        }
-    }
+
     return 0;
 }
 
-bool board::checkColumn(int i, int j, int k)
-{   
-    // bool check = false;
-    // if (i == 7 && j == 6) {check = true;}
-    int square_row = i/SquareSize;
-    //if (check) {cout << "square_row: " << square_row << endl;}
-    //if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
-    for (int n = 0; n < SquareSize*square_row; n++)
-    {  
-        // if (check) {cout << "n: " << n << " j: " << j << " k: " << k;}
-        // if (check) {cout << " " << value[n][j] << " " << endl;}
-        if (value[n][j] == k)
-        {
-            return 1;
-        }
-    }
-    //if (check) {cout << "i: " << i << " j: " << j << " k: " << k << endl;}
-    if (square_row < SquareSize - 1)
-    {
-        for (int n = square_row+SquareSize; n < BoardSize; n++)
-        {
-            if (value[n][j] == k)
-            {
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-
-bool board::checkSquare(int i, int j, int k)
+bool board::checkSquare(int square_num, int k)
 {
-    int square_row = i/SquareSize;
-    int square_column = j/SquareSize;
+    int square_row = square_num/SquareSize;
+    int square_column = square_num%SquareSize;
     for (int m = SquareSize*square_row; m < SquareSize*square_row+SquareSize; m++)
     {
         for (int n = SquareSize*square_column; n < SquareSize*square_column+SquareSize; n++)
@@ -222,19 +182,41 @@ bool board::checkSquare(int i, int j, int k)
 
 void board::printConflicts()
 {
+    cout << "Row Conflict Vectors:" << endl;
     for (int i = 0; i < BoardSize; i++)
     {
-        for (int j = 0; j < BoardSize; j++)
+        cout << "Row " << i << ": ";
+        for (int j = 0; j < MaxValue; j++)
         {
-            cout << "(" << i << ", " << j << ")" << ": ";
-            for (int k = 0; k < BoardSize; k++)
-            {
-                cout << conflicts[i][j][k] << " ";
-            }
-            cout << endl;
+            cout << row_conflicts[i][j] << " ";
         }
+        cout << endl;
     }
+
+    cout << "Column Conflict Vectors:" << endl;
+    for (int i = 0; i < BoardSize; i++)
+    {
+        cout << "Column " << i << ": ";
+        for (int j = 0; j < MaxValue; j++)
+        {
+            cout << column_conflicts[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    cout << "Square Conflict Vectors:" << endl;
+    for (int i = 0; i < BoardSize; i++)
+    {
+        cout << "Square " << i << ": ";
+        for (int j = 0; j < MaxValue; j++)
+        {
+            cout << square_conflicts[i][j] << " ";
+        }
+        cout << endl;
+    }
+
 }
+
 
 bool board::completeColumn(int i)
 {
@@ -309,21 +291,21 @@ bool board::checkWin()
     // Check that board is full and columns are complete
     for (int i = 0; i < BoardSize; i++)
     {
-        if(!completeColumn(i)) {cout << "ColumnFail"; return false;}
+        if(!completeColumn(i)) {cout << "ColumnFail" << endl; return false;}
         for (int j = 0; j <  BoardSize; j++)
         {
-            if (value[i][j] == Blank) {cout << "BlankFail"; return false;}
+            if (value[i][j] == Blank) {cout << "BlankFail" << endl; return false;}
         }
     }
 
     // Checks that rows are complete
     for (int j = 0; j < BoardSize; j++)
     {
-        if(!completeRow(j)) {cout << "RowFail"; return false;}
+        if(!completeRow(j)) {cout << "RowFail" << endl; return false;}
     }
 
     // Checks that the squares are complete
-    if (!completeSquares()) {cout << "SquareFail"; return false;}
+    if (!completeSquares()) {cout << "SquareFail" << endl; return false;}
 
     return true;   
 }
