@@ -357,3 +357,28 @@ unsigned long board::getIterations()
 {
     return iterations;
 }
+
+vector<int> board::nextCell()
+{
+    vector<int> fewest_choices;
+    int most_conflicts = 0;
+    for (int i = 0; i < BoardSize; i++)
+    {
+        for (int j = 0; j < BoardSize; j++)
+        {
+            int temp = 0;
+            temp += accumulate(row_conflicts[i].begin(), row_conflicts[i].end(), 0);
+            temp += accumulate(column_conflicts[j].begin(), column_conflicts[j].end(), 0);
+            temp += accumulate(square_conflicts[determineSquare(i, j)].begin(), square_conflicts[determineSquare(i, j)].end(), 0);
+            if (temp > most_conflicts && isBlank(i, j))
+            {
+                most_conflicts = temp;
+                fewest_choices.clear();
+                fewest_choices.push_back(j);
+                fewest_choices.push_back(i);
+            }
+        }
+    }
+    cout << most_conflicts << " " << fewest_choices[0] << " " << fewest_choices[1] << endl;
+    return fewest_choices;
+}
