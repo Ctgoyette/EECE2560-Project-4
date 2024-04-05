@@ -7,6 +7,7 @@
 #include "d_except.h"
 #include <list>
 #include <fstream>
+#include <numeric>
 
 using namespace std;
 
