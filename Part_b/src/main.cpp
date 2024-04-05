@@ -19,6 +19,7 @@ int main()
 
     try
     {
+        //Creates the board based on the information from the given file
         board b1(SquareSize);
         while (fin && fin.peek() != 'Z')
         {
@@ -30,6 +31,8 @@ int main()
             if (b1.checkWin()) {cout << "Board Solved" << endl;}
             else {cout << "This board has no solution!!!!" << endl;}
             cout << "Recursive Calls: " << b1.getIterations() << "\n" << endl;
+
+            //Calculations for determining total and average recursive calls for solving all boards
             totalRecCalls += b1.getIterations();
             numBoards += 1;
         }

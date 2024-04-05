@@ -11,8 +11,8 @@ square_conflicts(BoardSize,MaxValue)
     clear();
 }
 
-void board::clear()
 // Mark all possible values as legal for each board entry
+void board::clear()
 {
     for (int i = 0; i < BoardSize; i++)
     {
@@ -23,8 +23,8 @@ void board::clear()
     }
 }
 
-void board::initialize(ifstream &fin)
 // Read a Sudoku board from the input file.
+void board::initialize(ifstream &fin)
 {
     char ch;
 
@@ -49,9 +49,9 @@ void board::initialize(ifstream &fin)
     initializeConflicts();
 }
 
-ValueType board::getCell(int i, int j)
 // Returns the value stored in a cell. Throws an exception
 // if bad values are passed.
+ValueType board::getCell(int i, int j)
 {
     if (i >= 0 && i < BoardSize && j >= 0 && j < BoardSize)
     {
@@ -63,8 +63,8 @@ ValueType board::getCell(int i, int j)
     }
 }
 
-bool board::isBlank(int i, int j)
 // Returns true if cell i,j is blank, and false otherwise.
+bool board::isBlank(int i, int j)
 {
     if (i < 0 || i >= BoardSize || j < 0 || j >= BoardSize)
     {
@@ -73,8 +73,8 @@ bool board::isBlank(int i, int j)
     return (getCell(i,j) == Blank);
 }
 
-void board::print()
 // Prints the current board.
+void board::print()
 {
     for (int i = 0; i < BoardSize; i++)
     {
@@ -115,6 +115,7 @@ void board::print()
     cout << endl;
 }
 
+//Sets the specified cells to the specified value updates conflict vectors
 void board::setCell(int i, int j, int set_val)
 {
     value[i][j] = set_val;
@@ -125,6 +126,7 @@ void board::setCell(int i, int j, int set_val)
 
 }
 
+//Erases the specified cell and updates conflict vectors
 void board::eraseCell(int i, int j)
 {
     int cur_val = value[i][j];
@@ -136,6 +138,7 @@ void board::eraseCell(int i, int j)
     value[i][j] = Blank;
 }
 
+//Initializes all the conflict vectors of the board
 void board::initializeConflicts()
 {
     for (int i = 0; i < BoardSize; i++)
@@ -149,7 +152,7 @@ void board::initializeConflicts()
     }
 }
 
-
+//Checks if the specified value is present in the row
 bool board::checkRow(int row, int k)
 {
     for (int j = 0; j < BoardSize; j++)
@@ -163,6 +166,7 @@ bool board::checkRow(int row, int k)
     return 0;
 }
 
+//Checks if the specified value is present in the column
 bool board::checkColumn(int column, int k)
 {
     for (int i = 0; i < BoardSize; i++)
@@ -176,6 +180,7 @@ bool board::checkColumn(int column, int k)
     return 0;
 }
 
+//Checks if the specified value is present in the square
 bool board::checkSquare(int square_num, int k)
 {
     int square_row = square_num/SquareSize;
@@ -191,6 +196,7 @@ bool board::checkSquare(int square_num, int k)
     return 0;
 }
 
+//Prints all the conflict vectors
 void board::printConflicts()
 {
     cout << "Row Conflict Vectors:" << endl;
@@ -228,7 +234,7 @@ void board::printConflicts()
 
 }
 
-
+//Checks if a column is complete and contains all possible digits once
 bool board::completeColumn(int i)
 {
     vector<int> numVector (BoardSize);
@@ -246,6 +252,7 @@ bool board::completeColumn(int i)
     else {return false;}
 }
 
+//Checks if a row is complete and contains all possible digits once
 bool board::completeRow(int j)
 {
     vector<int> numVector (BoardSize);
@@ -263,6 +270,7 @@ bool board::completeRow(int j)
     else {return false;}
 }
 
+//Checks if a square is complete and contains all possible digits once
 bool board::completeSquares()
 {
     int count = 0;
@@ -297,6 +305,8 @@ bool board::completeSquares()
     return true;
 }
 
+//Checks is a board has been solved by observing if all conflict vectors are 1
+//All conflict vectors being 1 indicates that every row, column, and square has the values it need and the board is therefore solved
 bool board::checkWin()
 {
     for (int i = 0; i < BoardSize; i++)
@@ -309,6 +319,13 @@ bool board::checkWin()
     return true;
 }
 
+//Determines with square a cell is in based on its coordinates 
+//Squares are:
+// | 1 | 2 | 3 |
+// -------------
+// | 4 | 5 | 6 |
+// -------------
+// | 7 | 8 | 9 |
 int board::determineSquare(int i, int j)
 {
     int square_row = i/SquareSize;
@@ -318,6 +335,7 @@ int board::determineSquare(int i, int j)
     return square_num;
 }
 
+//Checks if a digit can be placed in a cell (returns true if there are no conflicts and false if conflicts are found)
 bool board::checkValid(int i, int j, int k)
 {
     if (row_conflicts[i][k-1] == 1 || column_conflicts[j][k-1] == 1 || square_conflicts[determineSquare(i, j)][k-1] == 1)
@@ -327,6 +345,7 @@ bool board::checkValid(int i, int j, int k)
     return true;
 }
 
+//Recursion algorithm to solve board
 bool board::solveBoard(int row, int col)
 {
     if (row == 0 && col == 0){iterations = 1;}
