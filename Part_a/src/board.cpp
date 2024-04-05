@@ -1,7 +1,7 @@
 #include "../include/board.h"
 
 board::board(int sqSize) : 
-value(BoardSize+1,BoardSize+1), 
+value(BoardSize,BoardSize), 
 row_conflicts(BoardSize,MaxValue),
 column_conflicts(BoardSize,MaxValue),
 square_conflicts(BoardSize,MaxValue)
@@ -14,9 +14,9 @@ square_conflicts(BoardSize,MaxValue)
 void board::clear()
 // Mark all possible values as legal for each board entry
 {
-    for (int i = 1; i <= BoardSize; i++)
+    for (int i = 0; i < BoardSize; i++)
     {
-        for (int j = 1; j <= BoardSize; j++)
+        for (int j = 0; j < BoardSize; j++)
         {
             value[i][j] = Blank;
         }
